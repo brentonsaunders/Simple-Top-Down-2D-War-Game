@@ -25,6 +25,7 @@ public:
 	int getWidth() const;
 	int getHeight() const;
 	Type get(int, int) const;
+	bool inBounds(int, int) const;
 	bool addObstacle(Type, int, int);
 	void update(DWORD);
 	void draw(Canvas*, GameAssets *);

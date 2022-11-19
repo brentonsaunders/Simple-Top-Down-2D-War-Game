@@ -52,9 +52,27 @@ void Unit::update(DWORD time, Units *units) {
 
 		steer(time, destination);
 
-		double distance = getSpeed() * time;
+		Vector2 ahead = pos + Vector2::fromAngle(angle) * getRadius();
 
-		pos = pos + Vector2::fromAngle(angle) * distance;
+		ObstacleMap* obstacleMap = units->getObstacleMap();
+
+		int aheadX = (int)(ahead.x / 20);
+		int aheadY = (int)(ahead.y / 20);
+		bool canGoForward = true;
+
+		if (obstacleMap->inBounds(aheadX, aheadY)) {
+			ObstacleMap::Type type = obstacleMap->get(aheadX, aheadY);
+
+			if (getCostToTraverse(type) < 0) {
+				canGoForward = false;
+			}
+		}
+
+		if (canGoForward) {
+			double distance = getSpeed() * time;
+
+			pos = pos + Vector2::fromAngle(angle) * distance;
+		}
 	}
 	else {
 		onArrived();
@@ -164,7 +182,11 @@ void Unit::drawHealthBar(Canvas* canvas, GameAssets* assets) {
 	canvas->restore();
 }
 
-int Unit::getCostToTraverse(Obstacle::Type type) const {
+int Unit::getCostToTraverse(ObstacleMap::Type type) const {
+	if (isAirUnit()) {
+		return 0;
+	}
+
 	return 0;
 }
 
@@ -175,7 +197,7 @@ TileMap<int> Unit::getTraversalMap(const ObstacleMap& map) const {
 
 	for (int y = 0; y < height; ++y) {
 		for (int x = 0; x < width; ++x) {
-			Obstacle::Type type = map.get(x, y);
+			ObstacleMap::Type type = map.get(x, y);
 
 			traversalMap.set(x, y, getCostToTraverse(type));
 		}

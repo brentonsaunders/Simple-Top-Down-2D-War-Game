@@ -5,7 +5,6 @@
 #include "Soldier.h"
 #include "Tank.h"
 #include "Fighter.h"
-#include "Obstacle.h"
 #include "UnitCollection.h"
 
 class Units {
@@ -17,6 +16,7 @@ public:
 	void draw(Canvas*, GameAssets*);
 	Unit* addUnit(Unit::Type, Unit::Team, int, int, int, int);
 	bool addObstacle(ObstacleMap::Type, int, int);
+	ObstacleMap* getObstacleMap() const;
 	UnitCollection getUnits();
 
 private:

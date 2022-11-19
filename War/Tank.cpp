@@ -130,18 +130,18 @@ Unit::Type Tank::getType() const {
 }
 
 int Tank::getRadius() const {
-	return 1;
+	return 20;
 }
 
 bool Tank::isGroundUnit() const { return true; }
 
-int Tank::getCostToTraverse(Obstacle::Type type) const {
+int Tank::getCostToTraverse(ObstacleMap::Type type) const {
 	switch (type) {
-	case Obstacle::GROUND0:
+	case ObstacleMap::GROUND0:
 		return 0;
-	case Obstacle::GROUND1:
+	case ObstacleMap::GROUND1:
 		return 1;
-	case Obstacle::GROUND2:
+	case ObstacleMap::GROUND2:
 		return 2;
 	}
 

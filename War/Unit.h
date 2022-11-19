@@ -45,7 +45,7 @@ public:
 	virtual int getTotalHp() const = 0;
 	virtual Type getType() const = 0;
 	virtual int getRadius() const = 0;
-	virtual int getCostToTraverse(Obstacle::Type) const;
+	virtual int getCostToTraverse(ObstacleMap::Type) const;
 	TileMap<int> getTraversalMap(const ObstacleMap&) const;
 	void follow(const Path&);
 	virtual bool isGroundUnit() const;

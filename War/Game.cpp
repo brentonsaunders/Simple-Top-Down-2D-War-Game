@@ -34,6 +34,8 @@ void Game::start() {
 }
 
 void Game::update(DWORD time) {
+	map.update(time);
+
 	units.update(time);
 }
 

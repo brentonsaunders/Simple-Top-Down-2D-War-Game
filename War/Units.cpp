@@ -22,7 +22,7 @@ void Units::init() {
 	addUnit(Unit::FIGHTER, Unit::USA, 780, 580, 500, 500);
 	 
 	for (int x = 0; x < 800; x += 20) {
-		addObstacle(Obstacle::HEDGEHOG, x, 300);
+		addObstacle(ObstacleMap::HEDGEHOG, x, 300);
 	}
 }
 
@@ -119,7 +119,11 @@ Unit* Units::addUnit(
 }
 
 bool Units::addObstacle(ObstacleMap::Type type, int x, int y) {
-	return obstacleMap->addObstacle(type, x, y);
+	return obstacleMap->addObstacle(type, x / 20, y / 20);
+}
+
+ObstacleMap* Units::getObstacleMap() const {
+	return obstacleMap;
 }
 
 UnitCollection Units::getUnits() {

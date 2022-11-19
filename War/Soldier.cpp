@@ -114,22 +114,24 @@ int Soldier::getRadius() const {
 	return 12;
 }
 
-int Soldier::getCostToTraverse(Obstacle::Type type) const {
+int Soldier::getCostToTraverse(ObstacleMap::Type type) const {
 	switch (type) {
-	case Obstacle::TREES:
-	case Obstacle::WATER:
+	case ObstacleMap::TREES:
+	case ObstacleMap::WATER:
+	case ObstacleMap::HEDGEHOG:
 		return -1;
-	case Obstacle::GROUND1:
+	case ObstacleMap::GROUND1:
 		return 1;
-	case Obstacle::GROUND2:
+	case ObstacleMap::GROUND2:
 		return 2;
-	case Obstacle::GROUND3:
+	case ObstacleMap::GROUND3:
 		return 3;
-	case Obstacle::GROUND4:
+	case ObstacleMap::GROUND4:
 		return 4;
-	case Obstacle::GROUND5:
+	case ObstacleMap::GROUND5:
 		return 5;
 	}
+
 	return 0;
 }
 

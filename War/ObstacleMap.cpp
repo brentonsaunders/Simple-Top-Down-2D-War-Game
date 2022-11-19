@@ -56,6 +56,10 @@ ObstacleMap::Type ObstacleMap::get(int x, int y) const {
 	return NONE;
 }
 
+bool ObstacleMap::inBounds(int x, int y) const {
+	return x >= 0 && y >= 0 && x < getWidth() && y < getHeight();
+}
+
 bool ObstacleMap::addObstacle(Type type, int x, int y) {
 	if (obstacleMap.get(x, y) != NONE) {
 		return false;
@@ -78,7 +82,7 @@ void ObstacleMap::update(DWORD time) {
 	vector<Obstacle>::iterator it = obstacles.begin();
 
 	while (it != obstacles.end()) {
-		if (!it->timeLeft <= 0) {
+		if (it->timeLeft <= 0) {
 			obstacleMap.set(it->x, it->y, NONE);
 
 			it = obstacles.erase(it);
@@ -115,10 +119,10 @@ void ObstacleMap::draw(Canvas* canvas, GameAssets *assets) {
 				canvas->drawBitmap(assets->tree, 20 * x, 20 * y);
 			}
 			else if (type == TRENCH) {
-				canvas->drawBitmap(assets->hedgehog, 20 * x, 20 * x);
+				canvas->drawBitmap(assets->hedgehog, 20 * x, 20 * y);
 			}
 			else if (type == HEDGEHOG) {
-				canvas->drawBitmap(assets->hedgehog, 20 * x, 20 * x);
+				canvas->drawBitmap(assets->hedgehog, 20 * x, 20 * y);
 			}
 			else {
 				terrainMap.draw(canvas, x, y);
