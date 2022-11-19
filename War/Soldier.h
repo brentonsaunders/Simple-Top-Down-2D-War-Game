@@ -18,11 +18,11 @@ public:
 	Type getType() const;
 	int getRadius() const;
 	int getCostToTraverse(ObstacleMap::Obstacle) const;
+	bool isGroundUnit() const;
 
 private:
-	Unit* opponent;
 	BulletEmitter bulletEmitter;
 
-	void turnToFaceOpponent(DWORD);
-	bool isFacingOpponent();
+	void turnToFaceOpponent(DWORD, Unit*);
+	bool isFacingOpponent(Unit*);
 };

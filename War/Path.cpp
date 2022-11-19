@@ -14,24 +14,40 @@ Path::Path(AStarPath path) {
 		int x = 20 * nodes[i].getX() + 10;
 		int y = 20 * nodes[i].getY() + 10;
 
-		this->nodes.push(Vector2(
+		this->nodes.push_back(Vector2(
 			20 * nodes[i].getX() + 10,
 			20 * nodes[i].getY() + 10
 		));
 	}
 }
 
+Path::Path(const Path& path) {
+	this->nodes = path.nodes;
+}
+
+Path::Path(const std::vector<Vector2>& nodes) {
+	int size = (int)nodes.size();
+
+	for (int i = size - 1; i >= 0; --i) {
+		this->nodes.push_back(nodes[i]);
+	}
+}
+
+Path::Path(const Vector2& pos) {
+	nodes.push_back(pos);
+}
+
 Path::~Path() {
 
 }
 
-Vector2 Path::nextNode(Vector2 pos) {
+Vector2 Path::nextNode(Vector2 pos, double turnRadius) {
 	while (!nodes.empty()) {
-		if (nodes.top().distance(pos) > 10) {
-			return nodes.top();
+		if (nodes.back().distance(pos) > turnRadius) {
+			return nodes.back();
 		}
 
-		nodes.pop();
+		nodes.pop_back();
 	}
 
 	return pos;

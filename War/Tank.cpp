@@ -4,7 +4,7 @@
 #include "Tank.h"
 #include "Units.h"
 
-Tank::Tank(Team team) : Unit(team), bulletEmitter(2000) {
+Tank::Tank(Team team) : Unit(team), bulletEmitter(100) {
 	turretAngle = random.nextDouble() * 2 * Math::PI;
 }
 
@@ -17,29 +17,24 @@ void Tank::update(DWORD time, Units *units) {
 
 	bulletEmitter.update(time);
 
-	if (!opponent || !opponent->isAlive()) {
-		opponent = NULL;
+	doRollOverDamage(time, units);
 
-		std::vector<Type> attackable;
+	std::vector<Type> attackable;
 
-		attackable.push_back(SOLDIER);
+	attackable.push_back(SOLDIER);
 
-		Unit* unit = units->getUnits()
-			.thatAreAlive()
-			.thatAreNear(pos, 200)
-			.notFromTeam(getTeam())
-			.ofTypes(attackable)
-			.sortedByTypeAndHp(attackable)
-			.first();
+	Unit* opponent = units->getUnits()
+		.thatAreAlive()
+		.thatAreNear(pos, 200)
+		.notFromTeam(getTeam())
+		.ofTypes(attackable)
+		.sortedByTypeAndHp(attackable)
+		.first();
 
-		if (unit) {
-			opponent = unit;
-		}
-	}
-	else {
-		turnToFaceOpponent(time);
+	if (opponent) {
+		turnToFaceOpponent(time, opponent);
 
-		if (isFacingOpponent()) {
+		if (isFacingOpponent(opponent)) {
 			opponent->damage(20.0 / 2000.0 * time);
 
 			bulletEmitter.shoot(pos, opponent->getPos(), 800.0 / 5000.0);
@@ -47,7 +42,17 @@ void Tank::update(DWORD time, Units *units) {
 	}
 }
 
-void Tank::turnToFaceOpponent(DWORD time) {
+void Tank::doRollOverDamage(DWORD time, Units* units) {
+	units->getUnits()
+		.except(this)
+		.thatAreAlive()
+		.thatAreNear(pos, 20)
+		.thatAreGroundUnits()
+		.damage(5.0 / 1000.0 * time);
+}
+
+
+void Tank::turnToFaceOpponent(DWORD time, Unit *opponent) {
 	Vector2 dir = opponent->getPos() - pos;
 
 	double angleDiff = Math::angleDiff(turretAngle, dir.angle());
@@ -72,7 +77,7 @@ void Tank::turnToFaceOpponent(DWORD time) {
 	turretAngle += theta;
 }
 
-bool Tank::isFacingOpponent() {
+bool Tank::isFacingOpponent(Unit *opponent) {
 	double distance = pos.distance(opponent->getPos());
 
 	Vector2 project = pos + Vector2::fromAngle(turretAngle) * distance;
@@ -93,7 +98,7 @@ void Tank::draw(Canvas* canvas, GameAssets* assets) {
 
 	canvas->save();
 
-	canvas->translate(pos.x - 5, pos.y);
+	canvas->translate(pos.x, pos.y);
 
 	canvas->rotate(turretAngle);
 
@@ -105,7 +110,7 @@ void Tank::draw(Canvas* canvas, GameAssets* assets) {
 }
 
 double Tank::getSpeed() {
-	return 800.0 / 20000.0;
+	return 800.0 / 40000.0;
 }
 
 double Tank::getTurnSpeed() {
@@ -127,3 +132,5 @@ Unit::Type Tank::getType() const {
 int Tank::getRadius() const {
 	return 1;
 }
+
+bool Tank::isGroundUnit() const { return true; }

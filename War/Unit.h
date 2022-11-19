@@ -25,7 +25,7 @@ public:
 
 	Unit(Team);
 	~Unit();
-	void init();
+	virtual void init();
 	void setTeam(Team);
 	Team getTeam() const;
 	void setPos(Vector2);
@@ -38,7 +38,7 @@ public:
 	void drawHealthBar(Canvas*, GameAssets*);
 	virtual double getSpeed() = 0;
 	virtual double getTurnSpeed() = 0;
-	virtual int getSteeringAccurary();
+	double getTurnRadius();
 	virtual void onArrived() = 0;
 	bool isAlive();
 	bool isDeadForLongEnough();
@@ -50,6 +50,8 @@ public:
 	virtual int getCostToTraverse(ObstacleMap::Obstacle) const;
 	TileMap getTraversalMap(const ObstacleMap&) const;
 	void follow(const Path&);
+	virtual bool isGroundUnit() const;
+	virtual bool isAirUnit() const;
 
 protected:
 	Vector2 pos;

@@ -14,10 +14,11 @@ Units::~Units() {
 }
 
 void Units::init() {
-	addSoldier(Unit::USA, 40, 40, 700,500);
-	// addSoldier(Unit::USA, 300, 300, 150, 100);
-	// addSoldier(Unit::GERMANY, 700, 400, 200, 200);
-	// addTank(Unit::GERMANY, 300, 500, 180, 130);
+	addUnit(Unit::SOLDIER, Unit::USA, 40, 40, 700,500);
+	addUnit(Unit::SOLDIER, Unit::USA, 300, 300, 150, 100);
+	addUnit(Unit::SOLDIER, Unit::GERMANY, 700, 400, 200, 200);
+	addUnit(Unit::TANK, Unit::GERMANY, 300, 500, 180, 130);
+	addUnit(Unit::FIGHTER, Unit::GERMANY, 0, 0, 500, 500);
 }
 
 void Units::update(DWORD time) {
@@ -58,10 +59,29 @@ void Units::draw(Canvas* canvas, GameAssets* assets) {
 	}
 }
 
-Unit* Units::addSoldier(Unit::Team team, int startX, int startY, int endX, int endY) {
-	Unit* unit = new Soldier(team);
+Unit* Units::addUnit(
+	Unit::Type type,
+	Unit::Team team,
+	int startX,
+	int startY,
+	int endX,
+	int endY
+) {
+	Unit* unit;
 
-	unit->init();
+	switch (type) {
+	case Unit::SOLDIER:
+		unit = new Soldier(team);
+		break;
+	case Unit::TANK:
+		unit = new Tank(team);
+		break;
+	case Unit::FIGHTER:
+		unit = new Fighter(team);
+		break;
+	default:
+		return NULL;
+	}
 
 	unit->setPos(Vector2(startX, startY));
 
@@ -84,37 +104,9 @@ Unit* Units::addSoldier(Unit::Team team, int startX, int startY, int endX, int e
 
 	AStarPath path = aStar.getPath();
 
-	// cout << traversalMap.toString() << endl;
-
-	// cout << aStar.getLatency() << endl;
-
-	// cout << path.toString() << endl;
-
 	unit->follow(Path(path));
 
-	units.push_back(unit);
-
-	return unit;
-}
-
-Unit* Units::addTank(Unit::Team team, int startX, int startY, int endX, int endY) {
-	Unit* unit = new Tank(team);
-
 	unit->init();
-
-	unit->setPos(Vector2(startX, startY));
-
-	units.push_back(unit);
-
-	return unit;
-}
-
-Unit* Units::addFighter(Unit::Team team, int startX, int startY, int endX, int endY) {
-	Unit* unit = new Fighter(team);
-
-	unit->init();
-
-	unit->setPos(Vector2(startX, startY));
 
 	units.push_back(unit);
 

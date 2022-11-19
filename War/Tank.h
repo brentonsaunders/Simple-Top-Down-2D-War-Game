@@ -17,12 +17,13 @@ public:
 	int getTotalHp() const;
 	Type getType() const;
 	int getRadius() const;
+	bool isGroundUnit() const;
 
 private:
 	double turretAngle;
-	Unit* opponent;
 	BulletEmitter bulletEmitter;
 
-	void turnToFaceOpponent(DWORD);
-	bool isFacingOpponent();
+	void turnToFaceOpponent(DWORD, Unit*);
+	bool isFacingOpponent(Unit*);
+	void doRollOverDamage(DWORD, Units*);
 };

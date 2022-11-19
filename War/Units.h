@@ -14,9 +14,7 @@ public:
 	void init();
 	void update(DWORD);
 	void draw(Canvas*, GameAssets*);
-	Unit* addSoldier(Unit::Team, int, int, int, int);
-	Unit* addTank(Unit::Team, int, int, int, int);
-	Unit* addFighter(Unit::Team, int, int, int, int);
+	Unit* addUnit(Unit::Type, Unit::Team, int, int, int, int);
 	UnitCollection getUnits();
 
 private:

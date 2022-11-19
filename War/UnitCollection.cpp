@@ -51,6 +51,45 @@ UnitCollection UnitCollection::notFromTeam(Unit::Team team) const {
 	return UnitCollection(result);
 }
 
+UnitCollection UnitCollection::thatAreAirUnits() const {
+	int size = (int)units.size();
+	vector<Unit*> result;
+
+	for (int i = 0; i < size; ++i) {
+		if (units[i]->isAirUnit()) {
+			result.push_back(units[i]);
+		}
+	}
+
+	return UnitCollection(result);
+}
+
+UnitCollection UnitCollection::thatAreGroundUnits() const {
+	int size = (int)units.size();
+	vector<Unit*> result;
+
+	for (int i = 0; i < size; ++i) {
+		if (units[i]->isGroundUnit()) {
+			result.push_back(units[i]);
+		}
+	}
+
+	return UnitCollection(result);
+}
+
+UnitCollection UnitCollection::except(const Unit* unit) const {
+	int size = (int)units.size();
+	vector<Unit*> result;
+
+	for (int i = 0; i < size; ++i) {
+		if (units[i] != unit) {
+			result.push_back(units[i]);
+		}
+	}
+
+	return UnitCollection(result);
+}
+
 UnitCollection UnitCollection::ofTypes(vector<Unit::Type> types) const {
 	int size = (int)units.size();
 	vector<Unit*> result;
@@ -98,6 +137,14 @@ UnitCollection UnitCollection::sortedByTypeAndHp(vector<Unit::Type> types) const
 	sort(results.begin(), results.end(), compare);
 
 	return UnitCollection(results);
+}
+
+void UnitCollection::damage(double amount) {
+	int size = (int)units.size();
+
+	for (int i = 0; i < size; ++i) {
+		units[i]->damage(amount);
+	}
 }
 
 Unit* UnitCollection::first() const {

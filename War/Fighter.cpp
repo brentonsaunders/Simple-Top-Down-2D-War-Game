@@ -3,15 +3,23 @@
 #include "Fighter.h"
 #include "Math.h"
 #include "Units.h"
+#include "Random.h"
 
 using namespace std;
 
 Fighter::Fighter(Team team) : Unit(team) {
-	onGuard = false;
 }
 
 Fighter::~Fighter() {
 
+}
+
+void Fighter::init() {
+	Unit::init();
+
+	Vector2 destination = path.nextNode(pos, getTurnRadius());
+
+	angle = (destination - pos).angle();
 }
 
 void Fighter::update(DWORD time, Units* units) {
@@ -26,13 +34,6 @@ void Fighter::draw(Canvas* canvas, GameAssets* assets) {
 	canvas->rotate(angle);
 
 	canvas->drawBitmap(assets->fighter, -27, -31);
-
-	if (onGuard) {
-		canvas->fillColor = RGB(255, 0, 0);
-
-		canvas->fillRect((int)guardingPos.x - 3, (int)guardingPos.y - 3,
-			6, 6);
-	}
 
 	canvas->fillColor = RGB(0, 0, 255);
 
@@ -50,30 +51,22 @@ double Fighter::getTurnSpeed() {
 	return Math::toRadians(360.0 / 5000.0);
 }
 
-int Fighter::getSteeringAccurary() {
-	if (onGuard) {
-		return 50;
+void Fighter::onArrived() {
+	if (patrolMidpoint == Vector2::ZERO) {
+		patrolMidpoint = pos;
 	}
 
-	return Unit::getSteeringAccurary();
+	patrol();
 }
 
-void Fighter::onArrived() {
-	if (!onGuard) {
-		onGuard = true;
-		
-		guardingPos = pos;
+void Fighter::patrol() {
+	Vector2 patrolRadius = patrolMidpoint - pos;
 
-		destination = guardingPos + Vector2::random() * 200;
-
-		return;
+	if (patrolRadius.magnitude() == 0) {
+		patrolRadius = Vector2::fromAngle(angle) * 100;
 	}
 
-	Vector2 diff = pos - guardingPos;
-	
-	diff = diff.rotate(Math::toRadians(90));
-
-	destination = guardingPos + diff;
+	follow(Path(patrolMidpoint + patrolRadius.rotate(Math::toRadians(45))));
 }
 
 int Fighter::getTotalHp() const {
@@ -87,3 +80,5 @@ Unit::Type Fighter::getType() const {
 int Fighter::getRadius() const {
 	return 1;
 }
+
+bool Fighter::isAirUnit() const { return true; }

@@ -8,17 +8,19 @@ class Fighter : public Unit {
 public:
 	Fighter(Team);
 	~Fighter();
+	void init();
 	void update(DWORD, Units*);
 	void draw(Canvas*, GameAssets*);
 	double getSpeed();
 	double getTurnSpeed();
-	int getSteeringAccurary();
 	void onArrived();
 	int getTotalHp() const;
 	Type getType() const;
 	int getRadius() const;
+	bool isAirUnit() const;
 
 private:
-	bool onGuard;
-	Vector2 guardingPos;
+	Vector2 patrolMidpoint;
+
+	void patrol();
 };

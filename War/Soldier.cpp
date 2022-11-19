@@ -8,9 +8,7 @@
 
 using namespace std;
 
-Soldier::Soldier(Team team) : Unit(team), bulletEmitter(100) {
-	opponent = NULL;
-}
+Soldier::Soldier(Team team) : Unit(team), bulletEmitter(100) {}
 
 Soldier::~Soldier() {
 
@@ -21,29 +19,22 @@ void Soldier::update(DWORD time, Units* units) {
 
 	bulletEmitter.update(time);
 
-	if (!opponent || !opponent->isAlive()) {
-		opponent = NULL;
+	std::vector<Type> attackable;
 
-		std::vector<Type> attackable;
+	attackable.push_back(SOLDIER);
 
-		attackable.push_back(SOLDIER);
+	Unit* opponent = units->getUnits()
+		.thatAreAlive()
+		.thatAreNear(pos, 200)
+		.notFromTeam(getTeam())
+		.ofTypes(attackable)
+		.sortedByTypeAndHp(attackable)
+		.first();
 
-		Unit* unit = units->getUnits()
-			.thatAreAlive()
-			.thatAreNear(pos, 200)
-			.notFromTeam(getTeam())
-			.ofTypes(attackable)
-			.sortedByTypeAndHp(attackable)
-			.first();
+	if (opponent) {
+		turnToFaceOpponent(time, opponent);
 
-		if (unit) {
-			opponent = unit;
-		}
-	}
-	else {
-		turnToFaceOpponent(time);
-
-		if (isFacingOpponent()) {
+		if (isFacingOpponent(opponent)) {
 			opponent->damage(5.0 / 2000.0 * time);
 
 			bulletEmitter.shoot(pos, opponent->getPos(), 800.0 / 5000.0);
@@ -51,7 +42,7 @@ void Soldier::update(DWORD time, Units* units) {
 	}
 }
 
-void Soldier::turnToFaceOpponent(DWORD time) {
+void Soldier::turnToFaceOpponent(DWORD time, Unit* opponent) {
 	Vector2 dir = opponent->getPos() - pos;
 
 	double angleDiff = Math::angleDiff(angle, dir.angle());
@@ -75,7 +66,7 @@ void Soldier::turnToFaceOpponent(DWORD time) {
 	angle += theta;
 }
 
-bool Soldier::isFacingOpponent() {
+bool Soldier::isFacingOpponent(Unit* opponent) {
 	double distance = pos.distance(opponent->getPos());
 
 	Vector2 project = pos + Vector2::fromAngle(angle) * distance;
@@ -141,3 +132,5 @@ int Soldier::getCostToTraverse(ObstacleMap::Obstacle obstacle) const {
 	}
 	return 0;
 }
+
+bool Soldier::isGroundUnit() const { return true; }

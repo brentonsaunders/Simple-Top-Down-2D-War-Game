@@ -55,20 +55,17 @@ void Unit::update(DWORD time, Units *units) {
 		deadTime += time;
 	}
 
-	Vector2 destination = path.nextNode(pos);
+	if(!path.atEnd()) {
+		Vector2 destination = path.nextNode(pos, getTurnRadius());
 
-	if (pos.distance(destination) > getSteeringAccurary()) {
 		steer(time, destination);
 
 		double distance = getSpeed() * time;
 
 		pos = pos + Vector2::fromAngle(angle) * distance;
-
-		if (pos.distance(destination) <= getSteeringAccurary()) {
-			if (path.atEnd()) {
-				onArrived();
-			}
-		}
+	}
+	else {
+		onArrived();
 	}
 }
 
@@ -89,8 +86,13 @@ void Unit::steer(DWORD time, const Vector2& destination) {
 	angle += deltaAngle;
 }
 
-int Unit::getSteeringAccurary() {
-	return 5;
+double Unit::getTurnRadius() {
+	double turnSpeed = getTurnSpeed();
+	double timeToCompleteTurn = (2 * Math::PI) / turnSpeed;
+	double C = getSpeed() * timeToCompleteTurn;
+	double r = C / (2 * Math::PI);
+
+	return r;
 }
 
 bool Unit::isAlive() {
@@ -192,4 +194,12 @@ TileMap Unit::getTraversalMap(const ObstacleMap& map) const {
 
 void Unit::follow(const Path& path) {
 	this->path = path;
+}
+
+bool Unit::isGroundUnit() const {
+	return false;
+}
+
+bool Unit::isAirUnit() const {
+	return false;
 }
