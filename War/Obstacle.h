@@ -7,6 +7,7 @@
 class Obstacle {
 public:
 	enum Type {
+		NONE,
 		GROUND0,
 		GROUND1,
 		GROUND2,
@@ -19,15 +20,15 @@ public:
 		TREES,
 	};
 
-	Obstacle(Type, Vector2);
+	Obstacle(Type, int, int);
 	~Obstacle();
 	void update(DWORD);
-	void draw(Canvas*, GameAssets*);
 	bool isAlive();
-	Vector2 getPos() const;
+	int getX() const;
+	int getY() const;
 
 private:
-	Vector2 pos;
+	int x, y;
 	int timeLeft;
 	Type type;
 };
