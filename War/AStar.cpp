@@ -49,8 +49,8 @@ bool AStar::findPath(int xStart, int yStart, int xEnd, int yEnd) {
 
 	for (int y = 0; y < height; ++y) {
 		for (int x = 0; x < width; ++x) {
-			nodes[y][x].g = INT_MAX;
-			nodes[y][x].h = nodes[y][x].g - euclidean(x, y, xEnd, yEnd);
+			nodes[y][x].g = 0;
+			nodes[y][x].h = euclidean(x, y, xEnd, yEnd);
 			nodes[y][x].list = 0;
 			nodes[y][x].parent = NULL;
 		}
@@ -68,7 +68,7 @@ bool AStar::findPath(int xStart, int yStart, int xEnd, int yEnd) {
 
 	struct AStarNodeCompare {
 		inline bool operator()(const AStarNode* a, const AStarNode* b) {
-			return a->g + a->h < b->g + b->h;
+			return (a->g + a->h) < (b->g + b->h);
 		}
 	};
 
@@ -120,19 +120,12 @@ bool AStar::findPath(int xStart, int yStart, int xEnd, int yEnd) {
 
 AStarPath AStar::getPath() const {
 	AStarNode* node = endNode;
-	stack<AStarNode*> reverseNodes;
-	vector<AStarNode> nodes;
+	stack<AStarNode> nodes;
 
 	while (node) {
-		reverseNodes.push(node);
+		nodes.push(*node);
 
 		node = node->parent;
-	}
-
-	while (!reverseNodes.empty()) {
-		nodes.push_back(*reverseNodes.top());
-
-		reverseNodes.pop();
 	}
 
 	return AStarPath(nodes);
@@ -142,12 +135,12 @@ DWORD AStar::getLatency() {
 	return latency;
 }
 
-int AStar::manhattan(int xStart, int yStart, int xEnd, int yEnd) {
-	return (int)abs(xStart - xEnd) + (int)abs(yStart - yEnd);
+double AStar::manhattan(int xStart, int yStart, int xEnd, int yEnd) {
+	return abs(xStart - xEnd) + abs(yStart - yEnd);
 }
 
-int AStar::euclidean(int xStart, int yStart, int xEnd, int yEnd) {
-	return (int)sqrt(pow(xStart - xEnd, 2) + pow(yStart - yEnd, 2));
+double AStar::euclidean(int xStart, int yStart, int xEnd, int yEnd) {
+	return sqrt(pow(xStart - xEnd, 2) + pow(yStart - yEnd, 2));
 }
 
 vector<AStar::AStarNode*> AStar::getNeighbors(AStarNode* node) {
@@ -173,8 +166,12 @@ vector<AStar::AStarNode*> AStar::getNeighbors(AStarNode* node) {
 	return neighbors;
 }
 
-AStarPath::AStarPath(const vector<AStar::AStarNode>& nodes) {
-	this->nodes = nodes;
+AStarPath::AStarPath(stack<AStar::AStarNode> nodes) {
+	while (!nodes.empty()) {
+		this->nodes.push_back(nodes.top());
+
+		nodes.pop();
+	}
 }
 
 AStarPath::~AStarPath() {}

@@ -104,7 +104,7 @@ double Soldier::getSpeed() {
 }
 
 double Soldier::getTurnSpeed() {
-	return Math::toRadians(360.0 / 5000.0);
+	return Math::toRadians(360.0 / 1000.0);
 }
 
 void Soldier::onArrived() {

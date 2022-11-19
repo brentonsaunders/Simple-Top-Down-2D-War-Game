@@ -6,6 +6,7 @@
 #include "Vector2.h"
 #include "Random.h"
 #include "ObstacleMap.h"
+#include "Path.h"
 
 class Units;
 
@@ -48,6 +49,7 @@ public:
 	virtual int getRadius() const = 0;
 	virtual int getCostToTraverse(ObstacleMap::Obstacle) const;
 	TileMap getTraversalMap(const ObstacleMap&) const;
+	void follow(const Path&);
 
 protected:
 	Vector2 pos;
@@ -56,7 +58,8 @@ protected:
 	Team team;
 	double hp;
 	DWORD deadTime;
+	Path path;
 	static Random random;
 
-	void steer(DWORD);
+	void steer(DWORD, const Vector2&);
 };

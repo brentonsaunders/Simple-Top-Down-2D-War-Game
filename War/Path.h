@@ -1,14 +1,17 @@
 #pragma once
 
-#include <vector>
+#include <stack>
 #include "Vector2.h"
 #include "AStar.h"
 
 class Path {
 public:
+	Path();
 	Path(AStarPath);
 	~Path();
+	Vector2 nextNode(Vector2);
+	bool atEnd();
 
 private:
-	std::vector<Vector2> nodes;
+	std::stack<Vector2> nodes;
 };

@@ -2,6 +2,7 @@
 
 #include <exception>
 #include <vector>
+#include <stack>
 #include <string>
 #include "TileMap.h"
 
@@ -17,8 +18,8 @@ public:
 	private:
 		AStarNode* parent;
 		int x, y;
-		int g;
-		int h;
+		double g;
+		double h;
 		int weight;
 		int list;
 		bool isTraversable;
@@ -40,14 +41,14 @@ private:
 	AStarNode* endNode;
 	DWORD latency;
 
-	int manhattan(int, int, int, int);
-	int euclidean(int, int, int, int);
+	double manhattan(int, int, int, int);
+	double euclidean(int, int, int, int);
 	std::vector<AStarNode*> getNeighbors(AStarNode*);
 };
 
 class AStarPath {
 public:
-	AStarPath(const std::vector<AStar::AStarNode>&);
+	AStarPath(std::stack<AStar::AStarNode>);
 	~AStarPath();
 	std::vector<AStar::AStarNode> getNodes() const;
 	std::string toString() const;

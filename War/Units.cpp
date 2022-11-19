@@ -14,12 +14,10 @@ Units::~Units() {
 }
 
 void Units::init() {
-	addSoldier(Unit::USA, 40, 40, 100, 100);
-	/*
-	addSoldier(Unit::USA, 300, 300, 150, 100);
-	addSoldier(Unit::GERMANY, 700, 400, 200, 200);
-	addTank(Unit::GERMANY, 300, 500, 180, 130);
-	*/
+	addSoldier(Unit::USA, 40, 40, 700,500);
+	// addSoldier(Unit::USA, 300, 300, 150, 100);
+	// addSoldier(Unit::GERMANY, 700, 400, 200, 200);
+	// addTank(Unit::GERMANY, 300, 500, 180, 130);
 }
 
 void Units::update(DWORD time) {
@@ -78,15 +76,21 @@ Unit* Units::addSoldier(Unit::Team team, int startX, int startY, int endX, int e
 		endY / 20
 	)) {
 		cout << "Couldn't find a path!" << endl;
+
+		delete unit;
+
+		return NULL;
 	}
 
 	AStarPath path = aStar.getPath();
 
-	cout << traversalMap.toString() << endl;
+	// cout << traversalMap.toString() << endl;
 
-	cout << aStar.getLatency() << endl;
+	// cout << aStar.getLatency() << endl;
 
-	cout << path.toString() << endl;
+	// cout << path.toString() << endl;
+
+	unit->follow(Path(path));
 
 	units.push_back(unit);
 
