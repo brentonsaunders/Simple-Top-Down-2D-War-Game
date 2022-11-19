@@ -42,14 +42,6 @@ Vector2 Unit::getPos() const {
 	return pos;
 }
 
-void Unit::setDestination(Vector2 destination) {
-	this->destination = destination;
-}
-
-Vector2 Unit::getDestination() const {
-	return destination;
-}
-
 void Unit::update(DWORD time, Units *units) {
 	if (!isAlive()) {
 		deadTime += time;
@@ -172,20 +164,20 @@ void Unit::drawHealthBar(Canvas* canvas, GameAssets* assets) {
 	canvas->restore();
 }
 
-int Unit::getCostToTraverse(ObstacleMap::Obstacle obstacle) const {
+int Unit::getCostToTraverse(Obstacle::Type type) const {
 	return 0;
 }
 
-TileMap Unit::getTraversalMap(const ObstacleMap& map) const {
+TileMap<int> Unit::getTraversalMap(const ObstacleMap& map) const {
 	int width = map.getWidth();
 	int height = map.getHeight();
-	TileMap traversalMap(width, height);
+	TileMap<int> traversalMap(width, height);
 
 	for (int y = 0; y < height; ++y) {
 		for (int x = 0; x < width; ++x) {
-			ObstacleMap::Obstacle obstacle = map.getObstacle(x, y);
+			Obstacle::Type type = map.get(x, y);
 
-			traversalMap.set(x, y, getCostToTraverse(obstacle));
+			traversalMap.set(x, y, getCostToTraverse(type));
 		}
 	}
 

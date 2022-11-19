@@ -26,7 +26,7 @@ public:
 	};
 
 
-	AStar(const TileMap&);
+	AStar(const TileMap<int>&);
 	~AStar();
 	bool findPath(int, int, int, int);
 	AStarPath getPath() const;

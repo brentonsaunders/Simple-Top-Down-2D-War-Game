@@ -21,8 +21,8 @@ Path::Path(AStarPath path) {
 	}
 }
 
-Path::Path(const Path& path) {
-	this->nodes = path.nodes;
+Path::Path(const Path& other) {
+	this->nodes = other.nodes;
 }
 
 Path::Path(const std::vector<Vector2>& nodes) {

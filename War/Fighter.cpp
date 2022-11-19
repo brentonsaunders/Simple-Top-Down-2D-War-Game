@@ -7,7 +7,8 @@
 
 using namespace std;
 
-Fighter::Fighter(Team team) : Unit(team) {
+Fighter::Fighter(Team team)
+	: Unit(team), bulletEmitter(100) {
 }
 
 Fighter::~Fighter() {
@@ -24,21 +25,42 @@ void Fighter::init() {
 
 void Fighter::update(DWORD time, Units* units) {
 	Unit::update(time, units);
+
+	bulletEmitter.update(time);
+
+	Unit* opponent = units->getUnits()
+		.thatAreAlive()
+		.thatAreNear(pos, 300)
+		.notFromTeam(getTeam())
+		.first();
+
+	if (opponent && isFacingOpponent(opponent)) {
+		opponent->damage(12.0 / 2000.0 * time);
+
+		bulletEmitter.shoot(pos, opponent->getPos());
+	}
+}
+
+bool Fighter::isFacingOpponent(Unit* opponent) {
+	double distance = pos.distance(opponent->getPos());
+
+	Vector2 project = pos + Vector2::fromAngle(angle) * distance;
+
+	return opponent->getPos().distance(project) <= opponent->getRadius();
 }
 
 void Fighter::draw(Canvas* canvas, GameAssets* assets) {
+	Unit::draw(canvas, assets);
+
 	canvas->save();
+
+	bulletEmitter.draw(canvas);
 
 	canvas->translate(pos.x, pos.y);
 
 	canvas->rotate(angle);
 
 	canvas->drawBitmap(assets->fighter, -27, -31);
-
-	canvas->fillColor = RGB(0, 0, 255);
-
-	canvas->fillRect((int)destination.x - 3, (int)destination.y - 3,
-		6, 6);
 
 	canvas->restore();
 }
@@ -70,7 +92,7 @@ void Fighter::patrol() {
 }
 
 int Fighter::getTotalHp() const {
-	return 20;
+	return 5;
 }
 
 Unit::Type Fighter::getType() const {
@@ -78,7 +100,7 @@ Unit::Type Fighter::getType() const {
 }
 
 int Fighter::getRadius() const {
-	return 1;
+	return 35;
 }
 
 bool Fighter::isAirUnit() const { return true; }

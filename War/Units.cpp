@@ -19,6 +19,11 @@ void Units::init() {
 	addUnit(Unit::SOLDIER, Unit::GERMANY, 700, 400, 200, 200);
 	addUnit(Unit::TANK, Unit::GERMANY, 300, 500, 180, 130);
 	addUnit(Unit::FIGHTER, Unit::GERMANY, 0, 0, 500, 500);
+	addUnit(Unit::FIGHTER, Unit::USA, 780, 580, 500, 500);
+	 
+	for (int x = 0; x < 800; x += 20) {
+		addObstacle(Obstacle::HEDGEHOG, x, 300);
+	}
 }
 
 void Units::update(DWORD time) {
@@ -40,10 +45,36 @@ void Units::update(DWORD time) {
 
 		++it;
 	}
+
+	vector<Obstacle>::iterator obstaclesIt = obstacles.begin();
+
+	while (obstaclesIt != obstacles.end()) {
+		Obstacle *obstacle = &(*obstaclesIt);
+
+		if (!obstacle->isAlive()) {
+			obstaclesIt = obstacles.erase(obstaclesIt);
+
+			continue;
+		}
+
+		obstacle->update(time);
+
+		++obstaclesIt;
+	}
 }
 
 void Units::draw(Canvas* canvas, GameAssets* assets) {
-	int size = (int)units.size();
+	int size;
+
+	size = (int)obstacles.size();
+
+	for (int i = 0; i < size; ++i) {
+		if (obstacles[i].isAlive()) {
+			obstacles[i].draw(canvas, assets);
+		}
+	}
+	
+	size = (int)units.size();
 
 	for (int i = 0; i < size; ++i) {
 		if (units[i]->isAlive()) {
@@ -85,7 +116,7 @@ Unit* Units::addUnit(
 
 	unit->setPos(Vector2(startX, startY));
 
-	TileMap traversalMap = unit->getTraversalMap(*obstacleMap);
+	TileMap<int> traversalMap = unit->getTraversalMap(*obstacleMap);
 
 	AStar aStar(unit->getTraversalMap(*obstacleMap));
 
@@ -113,6 +144,37 @@ Unit* Units::addUnit(
 	return unit;
 }
 
+bool Units::addObstacle(Obstacle::Type type, int x, int y) {
+	Obstacle::Type typeAtSamePos = obstacleMap->get(x / 20, y / 20);
+
+	if (typeAtSamePos == Obstacle::TREES || typeAtSamePos == Obstacle::WATER) {
+		return false;
+	}
+
+	if (obstacleAlreadyAtPos(x, y)) {
+		return false;
+	}
+
+	obstacles.push_back(Obstacle(type, Vector2(x, y)));
+
+	return true;
+}
+
 UnitCollection Units::getUnits() {
 	return UnitCollection(units);
+}
+
+bool Units::obstacleAlreadyAtPos(int x, int y) {
+	int size = (int)obstacles.size();
+
+	for (int i = 0; i < size; ++i) {
+		Vector2 pos = obstacles[i].getPos();
+
+		if (x / 20 == (int)pos.x / 20 &&
+			y / 20 == (int)pos.y / 20) {
+			return true;
+		}
+	}
+
+	return false;
 }

@@ -37,7 +37,7 @@ void Tank::update(DWORD time, Units *units) {
 		if (isFacingOpponent(opponent)) {
 			opponent->damage(20.0 / 2000.0 * time);
 
-			bulletEmitter.shoot(pos, opponent->getPos(), 800.0 / 5000.0);
+			bulletEmitter.shoot(pos, opponent->getPos());
 		}
 	}
 }
@@ -134,3 +134,16 @@ int Tank::getRadius() const {
 }
 
 bool Tank::isGroundUnit() const { return true; }
+
+int Tank::getCostToTraverse(Obstacle::Type type) const {
+	switch (type) {
+	case Obstacle::GROUND0:
+		return 0;
+	case Obstacle::GROUND1:
+		return 1;
+	case Obstacle::GROUND2:
+		return 2;
+	}
+
+	return -1;
+}

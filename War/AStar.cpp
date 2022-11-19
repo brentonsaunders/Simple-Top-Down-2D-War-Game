@@ -7,7 +7,7 @@
 
 using namespace std;
 
-AStar::AStar(const TileMap& tileMap) {
+AStar::AStar(const TileMap<int>& tileMap) {
 	latency = 0;
 
 	width = tileMap.getWidth();

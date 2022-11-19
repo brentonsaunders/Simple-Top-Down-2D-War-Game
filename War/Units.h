@@ -5,6 +5,7 @@
 #include "Soldier.h"
 #include "Tank.h"
 #include "Fighter.h"
+#include "Obstacle.h"
 #include "UnitCollection.h"
 
 class Units {
@@ -15,10 +16,14 @@ public:
 	void update(DWORD);
 	void draw(Canvas*, GameAssets*);
 	Unit* addUnit(Unit::Type, Unit::Team, int, int, int, int);
+	bool addObstacle(Obstacle::Type, int, int);
 	UnitCollection getUnits();
 
 private:
 	std::vector<Unit*> units;
+	std::vector<Obstacle> obstacles;
 	ObstacleMap* obstacleMap;
+
+	bool obstacleAlreadyAtPos(int, int);
 };
 

@@ -4,7 +4,7 @@
 #include "Random.h"
 #include "Canvas.h"
 
-class TerrainMap : public TileMap {
+class TerrainMap : public TileMap<int> {
 public:
 	TerrainMap(int, int);
 	~TerrainMap();

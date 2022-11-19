@@ -5,17 +5,47 @@
 using namespace std;
 
 ObstacleMap::ObstacleMap(int width, int height)
-	: TerrainMap(width, height), map(width, height) {
+	: terrainMap(width, height), obstacleMap(width, height) {
 	seedWater();
 
 	for (int i = 0; i < 5; ++i) {
-		spread(1);
+		spread(Obstacle::WATER);
 	}
 
 	seedTrees();
 
 	for (int i = 0; i < 5; ++i) {
-		spread(2);
+		spread(Obstacle::TREES);
+	}
+
+	for (int y = 0; y < height; ++y) {
+		for (int x = 0; x < width; ++x) {
+			Obstacle::Type type = obstacleMap.get(x, y);
+
+			if (type != Obstacle::TREES && type != Obstacle::WATER) {
+				int value = terrainMap.get(x, y);
+
+				switch (value) {
+				case 0:
+					type = Obstacle::GROUND0;
+					break;
+				case 1:
+					type = Obstacle::GROUND1;
+					break;
+				case 2:
+					type = Obstacle::GROUND2;
+					break;
+				case 3:
+					type = Obstacle::GROUND3;
+					break;
+				case 4:
+					type = Obstacle::GROUND4;
+					break;
+				}
+
+				obstacleMap.set(x, y, type);
+			}
+		}
 	}
 }
 
@@ -23,33 +53,16 @@ ObstacleMap::~ObstacleMap() {
 
 }
 
+int ObstacleMap::getWidth() const {
+	return obstacleMap.getWidth();
+}
 
-ObstacleMap::Obstacle ObstacleMap::getObstacle(int x, int y) const {
-	int value = map.get(x, y);
+int ObstacleMap::getHeight() const {
+	return obstacleMap.getHeight();
+}
 
-	if (value == 1) {
-		return WATER;
-	}
-	else if (value == 2) {
-		return TREES;
-	}
-
-	value = get(x, y);
-
-	switch (value) {
-	case 1:
-		return GROUND1;
-	case 2:
-		return GROUND2;
-	case 3:
-		return GROUND3;
-	case 4:
-		return GROUND4;
-	case 5:
-		return GROUND5;
-	}
-
-	return GROUND0;
+Obstacle::Type ObstacleMap::get(int x, int y) const {
+	return obstacleMap.get(x, y);
 }
 
 void ObstacleMap::draw(Canvas* canvas, GameAssets *assets) {
@@ -60,9 +73,9 @@ void ObstacleMap::draw(Canvas* canvas, GameAssets *assets) {
 
 	for (int y = 0; y < height; ++y) {
 		for (int x = 0; x < width; ++x) {
-			int value = map.get(x, y);
+			Obstacle::Type type = obstacleMap.get(x, y);
 
-			if (value == 1) {
+			if (type == Obstacle::WATER) {
 				canvas->fillColor = canvas->strokeColor = RGB(0, 162, 232);
 
 				canvas->fillRect(
@@ -72,11 +85,17 @@ void ObstacleMap::draw(Canvas* canvas, GameAssets *assets) {
 					20
 				);
 			}
-			else if(value == 2) {
+			else if(type == Obstacle::TREES) {
 				canvas->drawBitmap(assets->tree, 20 * x, 20 * y);
 			}
+			else if (type == Obstacle::TRENCH) {
+				canvas->drawBitmap(assets->hedgehog, 20 * x, 20 * x);
+			}
+			else if (type == Obstacle::HEDGEHOG) {
+				canvas->drawBitmap(assets->hedgehog, 20 * x, 20 * x);
+			}
 			else {
-				TerrainMap::draw(canvas, x, y);
+				terrainMap.draw(canvas, x, y);
 			}
 		}
 	}
@@ -97,7 +116,7 @@ void ObstacleMap::seedWater() {
 		int value = get(x, y);
 
 		if (get(x, y) == 0) {
-			map.set(x, y, 1);
+			obstacleMap.set(x, y, Obstacle::WATER);
 
 			++i;
 		}
@@ -116,15 +135,15 @@ void ObstacleMap::seedTrees() {
 
 		int value = get(x, y);
 
-		if (get(x, y) == 0 && countWithinRadius(x, y, 5, 1) == 0) {
-			map.set(x, y, 2);
+		if (terrainMap.get(x, y) == 0 && obstacleMap.countWithinRadius(x, y, 5, Obstacle::WATER) == 0) {
+			obstacleMap.set(x, y, Obstacle::TREES);
 
 			++i;
 		}
 	}
 }
 
-void ObstacleMap::spread(int spreadValue) {
+void ObstacleMap::spread(Obstacle::Type type) {
 	int width = getWidth();
 	int height = getHeight();
 
@@ -132,14 +151,15 @@ void ObstacleMap::spread(int spreadValue) {
 		for (int x = 0; x < width; ++x) {
 			int neighbors = 0;
 			int nonzeroNeighbors = 0;
-			int thisValue = map.get(x, y);
-			int elevationMapValue = get(x, y);
+			int thisValue = obstacleMap.get(x, y);
+			int terrainMapValue = terrainMap.get(x, y);
 
-			if (elevationMapValue != 0) {
+			if (terrainMapValue != 0) {
 				continue;
 			}
 
-			if (spreadValue == 2 && countWithinRadius(x, y, 5, 1) > 0) {
+			if (type == Obstacle::TREES &&
+				obstacleMap.countWithinRadius(x, y, 5, Obstacle::WATER) > 0) {
 				continue;
 			}
 
@@ -155,9 +175,9 @@ void ObstacleMap::spread(int spreadValue) {
 
 					++neighbors;
 
-					int value = map.get(xx, yy);
+					int value = obstacleMap.get(xx, yy);
 
-					if (value == spreadValue) {
+					if (value == type) {
 						++ nonzeroNeighbors;
 					}
 				}
@@ -166,7 +186,7 @@ void ObstacleMap::spread(int spreadValue) {
 			int rand = random.nextInt() % neighbors;
 
 			if (rand < nonzeroNeighbors) {
-				map.set(x, y, spreadValue);
+				obstacleMap.set(x, y, type);
 			}
 		}
 	}

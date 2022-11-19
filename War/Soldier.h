@@ -17,7 +17,7 @@ public:
 	int getTotalHp() const;
 	Type getType() const;
 	int getRadius() const;
-	int getCostToTraverse(ObstacleMap::Obstacle) const;
+	int getCostToTraverse(Obstacle::Type) const;
 	bool isGroundUnit() const;
 
 private:

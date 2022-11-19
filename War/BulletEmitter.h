@@ -10,7 +10,7 @@ public:
 	~BulletEmitter();
 	void update(DWORD);
 	void draw(Canvas*);
-	void shoot(Vector2, Vector2, double);
+	void shoot(Vector2, Vector2, double speed = 800.0 / 1000.0);
 
 private:
 	struct Bullet {

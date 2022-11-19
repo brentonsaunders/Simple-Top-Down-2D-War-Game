@@ -30,8 +30,6 @@ public:
 	Team getTeam() const;
 	void setPos(Vector2);
 	Vector2 getPos() const;
-	void setDestination(Vector2);
-	Vector2 getDestination() const;
 	virtual void update(DWORD, Units *);
 	virtual void draw(Canvas*, GameAssets*);
 	void drawFlag(Canvas*, GameAssets*);
@@ -47,15 +45,14 @@ public:
 	virtual int getTotalHp() const = 0;
 	virtual Type getType() const = 0;
 	virtual int getRadius() const = 0;
-	virtual int getCostToTraverse(ObstacleMap::Obstacle) const;
-	TileMap getTraversalMap(const ObstacleMap&) const;
+	virtual int getCostToTraverse(Obstacle::Type) const;
+	TileMap<int> getTraversalMap(const ObstacleMap&) const;
 	void follow(const Path&);
 	virtual bool isGroundUnit() const;
 	virtual bool isAirUnit() const;
 
 protected:
 	Vector2 pos;
-	Vector2 destination;
 	double angle;
 	Team team;
 	double hp;

@@ -2,31 +2,25 @@
 
 #include "TerrainMap.h"
 #include "GameAssets.h"
+#include "Obstacle.h"
 
-class ObstacleMap : public TerrainMap {
+class ObstacleMap {
 public:
-	enum Obstacle {
-		WATER,
-		TREES,
-		GROUND0,
-		GROUND1,
-		GROUND2,
-		GROUND3,
-		GROUND4,
-		GROUND5
-	};
-
 	ObstacleMap(int, int);
 	~ObstacleMap();
-	Obstacle getObstacle(int, int) const;
+	int getWidth() const;
+	int getHeight() const;
+	Obstacle::Type get(int, int) const;
 	void draw(Canvas*, GameAssets *);
 
 private:
-	TileMap map;
+	TileMap<Obstacle::Type> obstacleMap;
+	TerrainMap terrainMap;
+	Random random;
 
 	void seedWater();
 	void seedTrees();
-	void spread(int);
+	void spread(Obstacle::Type);
 };
 
 class TerrainMapGround {

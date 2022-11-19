@@ -37,7 +37,7 @@ void Soldier::update(DWORD time, Units* units) {
 		if (isFacingOpponent(opponent)) {
 			opponent->damage(5.0 / 2000.0 * time);
 
-			bulletEmitter.shoot(pos, opponent->getPos(), 800.0 / 5000.0);
+			bulletEmitter.shoot(pos, opponent->getPos());
 		}
 	}
 }
@@ -114,20 +114,20 @@ int Soldier::getRadius() const {
 	return 12;
 }
 
-int Soldier::getCostToTraverse(ObstacleMap::Obstacle obstacle) const {
-	switch (obstacle) {
-	case ObstacleMap::TREES:
-	case ObstacleMap::WATER:
+int Soldier::getCostToTraverse(Obstacle::Type type) const {
+	switch (type) {
+	case Obstacle::TREES:
+	case Obstacle::WATER:
 		return -1;
-	case ObstacleMap::GROUND1:
+	case Obstacle::GROUND1:
 		return 1;
-	case ObstacleMap::GROUND2:
+	case Obstacle::GROUND2:
 		return 2;
-	case ObstacleMap::GROUND3:
+	case Obstacle::GROUND3:
 		return 3;
-	case ObstacleMap::GROUND4:
+	case Obstacle::GROUND4:
 		return 4;
-	case ObstacleMap::GROUND5:
+	case Obstacle::GROUND5:
 		return 5;
 	}
 	return 0;

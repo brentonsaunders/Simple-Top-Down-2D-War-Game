@@ -8,6 +8,8 @@ GameAssets::GameAssets() {
 	usaFlag = NULL;
 	germanFlag = NULL;
 	tree = NULL;
+	hedgehog = NULL;
+	trench = NULL;
 }
 
 GameAssets::~GameAssets() {
@@ -17,6 +19,8 @@ GameAssets::~GameAssets() {
 	delete usaFlag;
 	delete germanFlag;
 	delete tree;
+	delete hedgehog;
+	delete trench;
 }
 
 bool GameAssets::load() {
@@ -26,6 +30,8 @@ bool GameAssets::load() {
 	usaFlag = Bitmap::fromFile(L"assets\\us-flag.bmp");
 	germanFlag = Bitmap::fromFile(L"assets\\german-flag.bmp");
 	tree = Bitmap::fromFile(L"assets\\tree.bmp", true);
+	hedgehog = Bitmap::fromFile(L"assets\\hedgehog.bmp");
+	trench = Bitmap::fromFile(L"assets\\trench.bmp");
 
 	return true;
 }

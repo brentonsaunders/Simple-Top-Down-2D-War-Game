@@ -10,6 +10,8 @@ public:
 	Bitmap* usaFlag;
 	Bitmap* germanFlag;
 	Bitmap* tree;
+	Bitmap* hedgehog;
+	Bitmap* trench;
 
 	GameAssets();
 	~GameAssets();

@@ -3,6 +3,7 @@
 #include "Unit.h"
 #include "Canvas.h"
 #include "GameAssets.h"
+#include "BulletEmitter.h"
 
 class Fighter : public Unit {
 public:
@@ -21,6 +22,8 @@ public:
 
 private:
 	Vector2 patrolMidpoint;
+	BulletEmitter bulletEmitter;
 
 	void patrol();
+	bool isFacingOpponent(Unit*);
 };
