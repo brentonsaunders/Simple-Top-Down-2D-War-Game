@@ -17,6 +17,7 @@ public:
 	int getTotalHp() const;
 	Type getType() const;
 	int getRadius() const;
+	int getCostToTraverse(ObstacleMap::Obstacle) const;
 
 private:
 	Unit* opponent;

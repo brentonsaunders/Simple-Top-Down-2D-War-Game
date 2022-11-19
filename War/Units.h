@@ -9,17 +9,18 @@
 
 class Units {
 public:
-	Units();
+	Units(ObstacleMap*);
 	~Units();
-	void init(ObstacleMap*);
+	void init();
 	void update(DWORD);
 	void draw(Canvas*, GameAssets*);
-	Unit* addSoldier(Unit::Team, int, int);
-	Unit* addTank(Unit::Team, int, int);
-	Unit* addFighter(Unit::Team, int, int);
+	Unit* addSoldier(Unit::Team, int, int, int, int);
+	Unit* addTank(Unit::Team, int, int, int, int);
+	Unit* addFighter(Unit::Team, int, int, int, int);
 	UnitCollection getUnits();
 
 private:
 	std::vector<Unit*> units;
+	ObstacleMap* obstacleMap;
 };
 

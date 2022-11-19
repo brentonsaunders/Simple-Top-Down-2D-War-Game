@@ -122,3 +122,22 @@ Unit::Type Soldier::getType() const {
 int Soldier::getRadius() const {
 	return 12;
 }
+
+int Soldier::getCostToTraverse(ObstacleMap::Obstacle obstacle) const {
+	switch (obstacle) {
+	case ObstacleMap::TREES:
+	case ObstacleMap::WATER:
+		return -1;
+	case ObstacleMap::GROUND1:
+		return 1;
+	case ObstacleMap::GROUND2:
+		return 2;
+	case ObstacleMap::GROUND3:
+		return 3;
+	case ObstacleMap::GROUND4:
+		return 4;
+	case ObstacleMap::GROUND5:
+		return 5;
+	}
+	return 0;
+}

@@ -23,7 +23,8 @@ ObstacleMap::~ObstacleMap() {
 
 }
 
-ObstacleMap::Obstacle ObstacleMap::get(int x, int y) const {
+
+ObstacleMap::Obstacle ObstacleMap::getObstacle(int x, int y) const {
 	int value = map.get(x, y);
 
 	if (value == 1) {
@@ -37,16 +38,18 @@ ObstacleMap::Obstacle ObstacleMap::get(int x, int y) const {
 
 	switch (value) {
 	case 1:
-		return GROUND2;
+		return GROUND1;
 	case 2:
-		return GROUND3;
+		return GROUND2;
 	case 3:
-		return GROUND4;
+		return GROUND3;
 	case 4:
+		return GROUND4;
+	case 5:
 		return GROUND5;
 	}
 
-	return GROUND1;
+	return GROUND0;
 }
 
 void ObstacleMap::draw(Canvas* canvas, GameAssets *assets) {

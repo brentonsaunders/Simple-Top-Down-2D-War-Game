@@ -7,7 +7,7 @@
 
 using namespace std;
 
-Game::Game() : map(40, 30) {
+Game::Game() : map(40, 30), units(&map) {
 
 }
 
@@ -30,7 +30,7 @@ void Game::init() {
 }
 
 void Game::start() {
-	units.init(&map);
+	units.init();
 }
 
 void Game::update(DWORD time) {

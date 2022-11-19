@@ -1,21 +1,25 @@
 #include <Windows.h>
+#include <iostream>
 #include "Units.h"
+#include "AStar.h"
 
 using namespace std;
 
-Units::Units() {
-
+Units::Units(ObstacleMap* obstacleMap) {
+	this->obstacleMap = obstacleMap;
 }
 
 Units::~Units() {
 
 }
 
-void Units::init(ObstacleMap* map) {
-	addSoldier(Unit::USA, 100, 100);
-	addSoldier(Unit::USA, 150, 100);
-	addSoldier(Unit::GERMANY, 200, 200);
-	addTank(Unit::GERMANY, 180, 130);
+void Units::init() {
+	addSoldier(Unit::USA, 40, 40, 100, 100);
+	/*
+	addSoldier(Unit::USA, 300, 300, 150, 100);
+	addSoldier(Unit::GERMANY, 700, 400, 200, 200);
+	addTank(Unit::GERMANY, 300, 500, 180, 130);
+	*/
 }
 
 void Units::update(DWORD time) {
@@ -56,38 +60,57 @@ void Units::draw(Canvas* canvas, GameAssets* assets) {
 	}
 }
 
-Unit* Units::addSoldier(Unit::Team team, int x, int y) {
+Unit* Units::addSoldier(Unit::Team team, int startX, int startY, int endX, int endY) {
 	Unit* unit = new Soldier(team);
 
 	unit->init();
 
-	unit->setPos(Vector2(x, y));
+	unit->setPos(Vector2(startX, startY));
+
+	TileMap traversalMap = unit->getTraversalMap(*obstacleMap);
+
+	AStar aStar(unit->getTraversalMap(*obstacleMap));
+
+	if (!aStar.findPath(
+		startX / 20,
+		startY / 20,
+		endX / 20,
+		endY / 20
+	)) {
+		cout << "Couldn't find a path!" << endl;
+	}
+
+	AStarPath path = aStar.getPath();
+
+	cout << traversalMap.toString() << endl;
+
+	cout << aStar.getLatency() << endl;
+
+	cout << path.toString() << endl;
 
 	units.push_back(unit);
 
 	return unit;
 }
 
-Unit* Units::addTank(Unit::Team team, int x, int y) {
+Unit* Units::addTank(Unit::Team team, int startX, int startY, int endX, int endY) {
 	Unit* unit = new Tank(team);
 
 	unit->init();
 
-	unit->setPos(Vector2(x, y));
-	unit->setDestination(Vector2(x, y));
+	unit->setPos(Vector2(startX, startY));
 
 	units.push_back(unit);
 
 	return unit;
 }
 
-Unit* Units::addFighter(Unit::Team team, int x, int y) {
+Unit* Units::addFighter(Unit::Team team, int startX, int startY, int endX, int endY) {
 	Unit* unit = new Fighter(team);
 
 	unit->init();
 
-	unit->setPos(Vector2(x, y));
-	unit->setDestination(Vector2(x, y));
+	unit->setPos(Vector2(startX, startY));
 
 	units.push_back(unit);
 

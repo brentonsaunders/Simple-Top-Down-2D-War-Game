@@ -178,7 +178,7 @@ TileMap Unit::getTraversalMap(const ObstacleMap& map) const {
 
 	for (int y = 0; y < height; ++y) {
 		for (int x = 0; x < width; ++x) {
-			ObstacleMap::Obstacle obstacle = map.get(x, y);
+			ObstacleMap::Obstacle obstacle = map.getObstacle(x, y);
 
 			traversalMap.set(x, y, getCostToTraverse(obstacle));
 		}

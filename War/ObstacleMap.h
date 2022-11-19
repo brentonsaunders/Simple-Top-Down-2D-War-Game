@@ -8,6 +8,7 @@ public:
 	enum Obstacle {
 		WATER,
 		TREES,
+		GROUND0,
 		GROUND1,
 		GROUND2,
 		GROUND3,
@@ -17,7 +18,7 @@ public:
 
 	ObstacleMap(int, int);
 	~ObstacleMap();
-	Obstacle get(int, int) const;
+	Obstacle getObstacle(int, int) const;
 	void draw(Canvas*, GameAssets *);
 
 private:
